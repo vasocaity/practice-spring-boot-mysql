@@ -25,7 +25,8 @@ public class TokenService {
         calendar.add(Calendar.MINUTE, 60);
         Date expiresAt = calendar.getTime();
         return JWT.create().withIssuer(issuer)
-                .withClaim("principal", user.getId())
+                .withClaim("day", 1)
+                .withClaim("principal", user.getId().toString())
                 .withClaim("role", "USER")
                 .withExpiresAt(expiresAt)
                 .sign(algorithm());

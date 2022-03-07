@@ -3,13 +3,13 @@ package com.maven.tutorial.mavem.tutorial.service;
 import com.maven.tutorial.mavem.tutorial.exception.BaseException;
 import com.maven.tutorial.mavem.tutorial.exception.UserException;
 import com.maven.tutorial.mavem.tutorial.model.entity.Address;
-import com.maven.tutorial.mavem.tutorial.model.entity.Social;
 import com.maven.tutorial.mavem.tutorial.model.entity.User;
 import com.maven.tutorial.mavem.tutorial.model.request.LoginRequest;
 import com.maven.tutorial.mavem.tutorial.model.request.UserRequest;
 import com.maven.tutorial.mavem.tutorial.model.response.AddressResponse;
 import com.maven.tutorial.mavem.tutorial.model.response.UserResponse;
 import com.maven.tutorial.mavem.tutorial.repository.UserRepository;
+import com.maven.tutorial.mavem.tutorial.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +26,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final SocialService socialService;
     private final AddressService addressService;
-    private  final TokenService tokenService;
+    private final TokenService tokenService;
 
     public UserResponse findUserById(Integer id) throws BaseException {
 
-        Optional<User> user =  repository.findById(id);
+        Optional<User> user = repository.findById(id);
         if (user.isEmpty()) {
             throw UserException.UserExceptionNotFound();
         }
@@ -72,4 +72,20 @@ public class UserService {
         return passwordEncoder.matches(rawPassword, encodedPAssword);
     }
 
+    public String refreshToken() throws BaseException {
+        Optional<Integer> opt = SecurityUtil.getCurrentUser();
+
+        if (opt.isEmpty()) {
+            throw UserException.unauthorized();
+        }
+        Integer userId = opt.get();
+
+        Optional<User> optUser = repository.findById(userId);
+        if (optUser.isEmpty()) {
+            throw UserException.UserExceptionNotFound();
+        }
+
+        User user = optUser.get();
+        return tokenService.tokenize(user);
+    }
 }

@@ -25,6 +25,12 @@ public class UserApi {
         return  ResponseEntity.ok(user);
     }
 
+    @GetMapping("refresh-token")
+    public ResponseEntity<String> refreshToken() throws BaseException {
+       String token = service.refreshToken();
+        return ResponseEntity.ok(token);
+    }
+
     @PostMapping("register")
     public ResponseEntity<String> create(@RequestBody UserRequest userRequest) {
         service.create(userRequest);
