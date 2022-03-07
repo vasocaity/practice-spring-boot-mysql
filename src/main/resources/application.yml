@@ -1,0 +1,26 @@
+spring:
+  logging:
+    level:
+      org:
+        hibernate:
+          engine:
+            transaction:
+              internal:
+                TransactionImpl: DEBUG
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://${SECRET_DB_HOST:localhost}:${SECRET_DB_PORT:3306}/maven_spring_db
+    username: ${SECRET_DB_USERNAME:root}
+    password: ${SECRET_DB_PASSWORD:password}
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 2MB
+      max-request-size: 5MB
+app:
+  token:
+    secret: asdfghjkl
+    issuer: me
