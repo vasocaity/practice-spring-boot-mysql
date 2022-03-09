@@ -20,7 +20,7 @@ public class UserApi {
     private final UserService service;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UserResponse> findById(@PathVariable("id") Integer id) throws BaseException {
+    public ResponseEntity<UserResponse> findById(@PathVariable("id") Integer id) throws Exception {
         UserResponse user = service.findUserById(id);
         return  ResponseEntity.ok(user);
     }

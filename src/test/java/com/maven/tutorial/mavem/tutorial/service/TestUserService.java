@@ -35,7 +35,7 @@ public class TestUserService {
     private  UserService service;
 
     @Test
-    void  should_call_find_by_id() throws BaseException {
+    void  should_call_find_by_id() throws Exception {
         User mockReturn = new User();
         mockReturn.setId(1);
         mockReturn.setEmail("user@mail.com");

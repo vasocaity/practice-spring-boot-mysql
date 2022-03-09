@@ -1,6 +1,7 @@
 package com.maven.tutorial.mavem.tutorial.service;
 
 import com.maven.tutorial.mavem.tutorial.exception.BaseException;
+import com.maven.tutorial.mavem.tutorial.exception.NoDataFoundException;
 import com.maven.tutorial.mavem.tutorial.exception.UserException;
 import com.maven.tutorial.mavem.tutorial.model.entity.Address;
 import com.maven.tutorial.mavem.tutorial.model.entity.User;
@@ -28,11 +29,11 @@ public class UserService {
     private final AddressService addressService;
     private final TokenService tokenService;
 
-    public UserResponse findUserById(Integer id) throws BaseException {
+    public UserResponse findUserById(Integer id) throws Exception {
 
         Optional<User> user = repository.findById(id);
         if (user.isEmpty()) {
-            throw UserException.UserExceptionNotFound();
+            throw new NoDataFoundException();
         }
         UserResponse userResponse = new UserResponse();
         userResponse.setEmail(user.get().getEmail());
