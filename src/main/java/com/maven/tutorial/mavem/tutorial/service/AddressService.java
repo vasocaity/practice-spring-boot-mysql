@@ -42,8 +42,8 @@ public class AddressService {
         Map<String, Integer> repeatationMap = new HashMap<String, Integer>();
 
         for (String str : strings) {
-
-            if (repeatationMap.containsKey(str.toLowerCase())) {
+            str = str.toLowerCase();
+            if (repeatationMap.containsKey(str)) {
                 repeatationMap.put(str, repeatationMap.get(str) + 1);
             } else {
                 repeatationMap.put(str, 1);

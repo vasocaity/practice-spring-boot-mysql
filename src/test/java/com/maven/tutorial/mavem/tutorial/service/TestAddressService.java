@@ -50,4 +50,29 @@ public class TestAddressService {
         assertEquals(7, service.oddCount(15));
         assertEquals(7511, service.oddCount(15023));
     }
+
+    @Test void validatePin_InvalidCase() {
+        assertEquals(false, service.validatePin(""));
+        assertEquals(false, service.validatePin("1"));
+        assertEquals(false, service.validatePin("123"));
+        assertEquals(false, service.validatePin("123A"));
+        assertEquals(false, service.validatePin("A123"));
+        assertEquals(false, service.validatePin("12345"));
+        assertEquals(false, service.validatePin("vfgbh"));
+        assertEquals(false, service.validatePin("vkdo[]"));
+
+    }
+
+    @Test void validatePin_ValidCase() {
+        assertEquals(true, service.validatePin("1234"));
+        assertEquals(true, service.validatePin("654321"));
+
+    }
+
+    @Test void maskify() {
+        assertEquals("1", service.maskify("1"));
+        assertEquals("123", service.maskify("123"));
+        assertEquals("#1457", service.maskify("11457"));
+        assertEquals("###########0000", service.maskify("000000000000000"));
+    }
 }
