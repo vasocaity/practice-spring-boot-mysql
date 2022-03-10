@@ -21,6 +21,8 @@ spring:
       max-file-size: 2MB
       max-request-size: 5MB
 app:
+  baseUrl: https://api-nodejs-todolist.herokuapp.com
+  todoToken: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MjFlNWIyMmJlMzcyZTAwMTc3ZWJiNDEiLCJpYXQiOjE2NDY4ODMzMDN9.idgXg_tBIdlhtn1vOZ97MbeLduklwbqUU2ZskZs-an4
   token:
     secret: asdfghjkl
     issuer: me

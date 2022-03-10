@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -72,6 +73,11 @@ public class AddressService {
 
         } while (n > 1);
         return count;
+    }
+
+    public int countBits(int n){
+        String bin = Integer.toBinaryString(n);
+        return (int) Arrays.stream(bin.split("")).filter(s -> s.equals("1")).count();
     }
 }
 

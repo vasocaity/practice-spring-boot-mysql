@@ -75,4 +75,12 @@ public class TestAddressService {
         assertEquals("#1457", service.maskify("11457"));
         assertEquals("###########0000", service.maskify("000000000000000"));
     }
+    @Test
+    public void testGame() {
+        assertEquals(5, service.countBits(1234));
+        assertEquals(1, service.countBits(4));
+        assertEquals(3, service.countBits(7));
+        assertEquals(2, service.countBits(9));
+        assertEquals(2, service.countBits(10));
+    }
 }
