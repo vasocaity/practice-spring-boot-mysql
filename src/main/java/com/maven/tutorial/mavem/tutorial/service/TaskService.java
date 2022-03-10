@@ -52,7 +52,6 @@ public class TaskService {
 
     private HttpHeaders setupHttpHeadersWithAuth(HttpHeaders httpHeaders) {
         httpHeaders.add("Authorization", "Bearer " + token);
-
         return httpHeaders;
     }
 

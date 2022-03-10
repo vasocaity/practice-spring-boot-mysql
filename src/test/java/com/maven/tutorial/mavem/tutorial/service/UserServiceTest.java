@@ -1,6 +1,5 @@
 package com.maven.tutorial.mavem.tutorial.service;
 
-import com.maven.tutorial.mavem.tutorial.exception.BaseException;
 import com.maven.tutorial.mavem.tutorial.model.entity.Address;
 import com.maven.tutorial.mavem.tutorial.model.entity.User;
 import com.maven.tutorial.mavem.tutorial.model.response.UserResponse;
@@ -19,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
-public class TestUserService {
+public class UserServiceTest {
     @Mock
     private UserRepository mockRepo;
     @Mock
