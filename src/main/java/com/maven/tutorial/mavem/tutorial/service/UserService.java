@@ -14,8 +14,10 @@ import com.maven.tutorial.mavem.tutorial.repository.UserRepository;
 import com.maven.tutorial.mavem.tutorial.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -108,13 +110,18 @@ public class UserService {
         font.setFontHeightInPoints((short) 16);
         font.setBold(true);
         headerStyle.setFont(font);
-        //  Row
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:E1"));
+        //  Header
         Row header = sheet.createRow(0);
+        Cell headerCell = header.createCell(0);
+        headerCell.setCellValue("USER");
+        // name of column 2
+        Row row = sheet.createRow(1);
         List<String> rows = Arrays.asList("email", "firstName", "lastName", "facebook", "instagram");
         for (int i = 0; i < 5; i++) {
-            Cell headerCell = header.createCell(i);
-            headerCell.setCellValue(rows.get(i));
-            headerCell.setCellStyle(headerStyle);
+            Cell cell = row.createCell(i);
+            cell.setCellValue(rows.get(i));
+            cell.setCellStyle(headerStyle);
             sheet.autoSizeColumn(i);
         }
         //  Cell
@@ -129,18 +136,27 @@ public class UserService {
                                 .build()
                 )
                 .collect(Collectors.toList());
-        Integer rowIdx = 1;
+        Integer rowIdx = 2;
         for (UserXlsResponse response : userXlsResponses
         ) {
-            Row row = sheet.createRow(rowIdx++);
-            row.createCell(0).setCellValue(response.getEmail());
-            row.createCell(1).setCellValue(response.getFirstName());
-            row.createCell(2).setCellValue(response.getLastName());
-            row.createCell(3).setCellValue(response.getFacebook());
-            row.createCell(4).setCellValue(response.getInstagram());
+            Row rowContent = sheet.createRow(rowIdx++);
+            rowContent.createCell(0).setCellValue(response.getEmail());
+            rowContent.createCell(1).setCellValue(response.getFirstName());
+            rowContent.createCell(2).setCellValue(response.getLastName());
+            rowContent.createCell(3).setCellValue(response.getFacebook());
+            rowContent.createCell(4).setCellValue(response.getInstagram());
         }
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         workbook.write(out);
+        return out.toByteArray();
+    }
+
+    public byte[] getWord() throws Exception {
+        XWPFDocument document = new XWPFDocument();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        document.write(out);
+        out.close();
+        document.close();
         return out.toByteArray();
     }
 }

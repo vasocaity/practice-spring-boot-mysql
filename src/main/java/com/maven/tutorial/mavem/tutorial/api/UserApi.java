@@ -6,6 +6,7 @@ import com.maven.tutorial.mavem.tutorial.model.request.UserRequest;
 import com.maven.tutorial.mavem.tutorial.model.response.UserResponse;
 import com.maven.tutorial.mavem.tutorial.service.UserService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -13,9 +14,9 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
+@Slf4j
 @RequestMapping("api/v1/users")
 @RestController
 @AllArgsConstructor
@@ -55,7 +56,21 @@ public class UserApi {
             return new ResponseEntity<>(new ByteArrayResource(service.getXsl()),
                     header, HttpStatus.CREATED);
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping("word")
+    public ResponseEntity<ByteArrayResource> getWordFile() throws Exception {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(new MediaType("application", "force-download"));
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=user.doc");
+            return new ResponseEntity<>(new ByteArrayResource(service.getWord()),
+                    headers, HttpStatus.OK);
+        } catch (Exception e) {
+            log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
