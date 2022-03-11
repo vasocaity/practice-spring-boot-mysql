@@ -9,16 +9,24 @@ import com.maven.tutorial.mavem.tutorial.model.request.LoginRequest;
 import com.maven.tutorial.mavem.tutorial.model.request.UserRequest;
 import com.maven.tutorial.mavem.tutorial.model.response.AddressResponse;
 import com.maven.tutorial.mavem.tutorial.model.response.UserResponse;
+import com.maven.tutorial.mavem.tutorial.model.response.UserXlsResponse;
 import com.maven.tutorial.mavem.tutorial.repository.UserRepository;
 import com.maven.tutorial.mavem.tutorial.util.SecurityUtil;
 import lombok.AllArgsConstructor;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -88,5 +96,51 @@ public class UserService {
 
         User user = optUser.get();
         return tokenService.tokenize(user);
+    }
+
+    public byte[] getXsl() throws IOException {
+        Workbook workbook = new XSSFWorkbook();
+        Sheet sheet = workbook.createSheet("User");
+
+        CellStyle headerStyle = workbook.createCellStyle();
+        XSSFFont font = ((XSSFWorkbook) workbook).createFont();
+        font.setFontName("Arial");
+        font.setFontHeightInPoints((short) 16);
+        font.setBold(true);
+        headerStyle.setFont(font);
+        //  Row
+        Row header = sheet.createRow(0);
+        List<String> rows = Arrays.asList("email", "firstName", "lastName", "facebook", "instagram");
+        for (int i = 0; i < 5; i++) {
+            Cell headerCell = header.createCell(i);
+            headerCell.setCellValue(rows.get(i));
+            headerCell.setCellStyle(headerStyle);
+            sheet.autoSizeColumn(i);
+        }
+        //  Cell
+        List<User> users = (List<User>) repository.findAll();
+        List<UserXlsResponse> userXlsResponses = users.stream().map(m ->
+                        UserXlsResponse.builder()
+                                .email(m.getEmail())
+                                .facebook(m.getSocial().getFacebook())
+                                .firstName(m.getFirstName())
+                                .instagram(m.getSocial().getInstagram())
+                                .lastName(m.getLastName())
+                                .build()
+                )
+                .collect(Collectors.toList());
+        Integer rowIdx = 1;
+        for (UserXlsResponse response : userXlsResponses
+        ) {
+            Row row = sheet.createRow(rowIdx++);
+            row.createCell(0).setCellValue(response.getEmail());
+            row.createCell(1).setCellValue(response.getFirstName());
+            row.createCell(2).setCellValue(response.getLastName());
+            row.createCell(3).setCellValue(response.getFacebook());
+            row.createCell(4).setCellValue(response.getInstagram());
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out);
+        return out.toByteArray();
     }
 }
