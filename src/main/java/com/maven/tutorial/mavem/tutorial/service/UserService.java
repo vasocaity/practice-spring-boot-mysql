@@ -13,10 +13,11 @@ import com.maven.tutorial.mavem.tutorial.model.response.UserXlsResponse;
 import com.maven.tutorial.mavem.tutorial.repository.UserRepository;
 import com.maven.tutorial.mavem.tutorial.util.SecurityUtil;
 import lombok.AllArgsConstructor;
+import org.apache.poi.common.usermodel.HyperlinkType;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.XSSFFont;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.apache.poi.xssf.usermodel.*;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -102,6 +103,7 @@ public class UserService {
 
     public byte[] getXsl() throws IOException {
         Workbook workbook = new XSSFWorkbook();
+        // Sheet User
         Sheet sheet = workbook.createSheet("User");
 
         CellStyle headerStyle = workbook.createCellStyle();
@@ -110,20 +112,23 @@ public class UserService {
         font.setFontHeightInPoints((short) 16);
         font.setBold(true);
         headerStyle.setFont(font);
-        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:E1"));
+
         //  Header
+        sheet.addMergedRegion(CellRangeAddress.valueOf("A1:E1"));
         Row header = sheet.createRow(0);
         Cell headerCell = header.createCell(0);
+        headerCell.setCellStyle(headerStyle);
         headerCell.setCellValue("USER");
-        // name of column 2
+
+        // Row 2
         Row row = sheet.createRow(1);
         List<String> rows = Arrays.asList("email", "firstName", "lastName", "facebook", "instagram");
         for (int i = 0; i < 5; i++) {
             Cell cell = row.createCell(i);
             cell.setCellValue(rows.get(i));
-            cell.setCellStyle(headerStyle);
             sheet.autoSizeColumn(i);
         }
+
         //  Cell
         List<User> users = (List<User>) repository.findAll();
         List<UserXlsResponse> userXlsResponses = users.stream().map(m ->
@@ -146,6 +151,26 @@ public class UserService {
             rowContent.createCell(3).setCellValue(response.getFacebook());
             rowContent.createCell(4).setCellValue(response.getInstagram());
         }
+
+        CreationHelper createHelper = workbook.getCreationHelper();
+        XSSFHyperlink link = (XSSFHyperlink) createHelper.createHyperlink(HyperlinkType.DOCUMENT);
+        link.setAddress("'Address'!A1");
+
+        Row hyperlinkRow = sheet.createRow(7);
+        Cell hyperlinkCell = hyperlinkRow.createCell(0);
+        CellStyle hlinkstyle = workbook.createCellStyle();
+        XSSFFont hlinkFont = ((XSSFWorkbook) workbook).createFont();
+        hlinkFont.setColor(HSSFColor.HSSFColorPredefined.BLUE.getIndex());
+        hlinkFont.setBold(true);
+        hlinkstyle.setFont(hlinkFont);
+
+        hyperlinkCell.setCellStyle(hlinkstyle);
+        hyperlinkCell.setHyperlink(link);
+        hyperlinkCell.setCellValue("Address");  // <-- important
+
+        // Sheet Address
+        Sheet sheetAddress = workbook.createSheet("Address");
+
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         workbook.write(out);
         return out.toByteArray();
