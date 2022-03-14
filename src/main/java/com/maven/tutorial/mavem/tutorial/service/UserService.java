@@ -17,14 +17,20 @@ import org.apache.poi.common.usermodel.HyperlinkType;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
-import org.apache.poi.xssf.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFHyperlink;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -183,5 +189,32 @@ public class UserService {
         out.close();
         document.close();
         return out.toByteArray();
+    }
+
+    public List<UserXlsResponse> readXls() throws IOException, URISyntaxException {
+        // retrieve the first sheet of the file and iterate through each row:
+        String fileLocation = Paths.get(ClassLoader.getSystemResource("test.xlsx").toURI()).toString();
+        FileInputStream file = new FileInputStream(new File(fileLocation));
+        Workbook workbook = new XSSFWorkbook(file);
+        Sheet sheet = workbook.getSheetAt(0);
+        List<List<String>> stringListMap = new ArrayList<>();
+        for (Row row : sheet) {
+            List<String> strings = new ArrayList<>();
+            for (Cell cell : row) {
+                strings.add(cell.getStringCellValue());
+            }
+            stringListMap.add(strings);
+        }
+        if (workbook != null) {
+            workbook.close();
+        }
+        return stringListMap.stream().map(s -> UserXlsResponse.builder()
+                .email(s.get(0))
+                .firstName(s.get(1))
+                .lastName(s.get(2))
+                .facebook(s.get(3))
+                .instagram(s.get(4))
+                .build())
+                .collect(Collectors.toList());
     }
 }
