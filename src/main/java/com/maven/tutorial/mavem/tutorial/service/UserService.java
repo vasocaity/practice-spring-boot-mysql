@@ -204,11 +204,12 @@ public class UserService {
                 strings.add(cell.getStringCellValue());
             }
             stringListMap.add(strings);
+
         }
         if (workbook != null) {
             workbook.close();
         }
-        return stringListMap.stream().map(s -> UserXlsResponse.builder()
+        return stringListMap.stream().filter(s -> !s.get(0).equals("email")).map(s -> UserXlsResponse.builder()
                 .email(s.get(0))
                 .firstName(s.get(1))
                 .lastName(s.get(2))
