@@ -12,6 +12,9 @@ import springfox.documentation.spring.web.plugins.Docket;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+
+import static springfox.documentation.builders.PathSelectors.regex;
 
 @Configuration
 public class SpringFoxConfig {
@@ -24,6 +27,7 @@ public class SpringFoxConfig {
                 .select()
                 .apis(RequestHandlerSelectors.any())
                 .paths(PathSelectors.any())
+                .paths(regex("/api.*"))
                 .build();
     }
 
