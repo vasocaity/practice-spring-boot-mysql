@@ -35,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().disable().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().authorizeRequests().antMatchers(
-                        "/v3/api-docs/**",
+                        "/v2/api-docs/**",
                         "/swagger-resources",
                         "/swagger-resources/**",
                         "/configuration/ui",
