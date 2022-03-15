@@ -34,7 +34,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.cors().disable().csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and().authorizeRequests().antMatchers("/api/v1/users/register", "/api/v1/users/login").anonymous()
+                .and().authorizeRequests().antMatchers(
+                        "/v3/api-docs/**",
+                        "/swagger-resources",
+                        "/swagger-resources/**",
+                        "/configuration/ui",
+                        "/configuration/security",
+                        "/swagger-ui.html",
+                        "/webjars/**",
+                        "/swagger-ui/**",
+                        "/api/v1/users/register",
+                        "/api/v1/users/login"
+                ).anonymous()
                 .anyRequest().authenticated()
                 .and().apply(new TokenFilterConfiguerer(tokenService));
     }

@@ -26,3 +26,6 @@ app:
   token:
     secret: asdfghjkl
     issuer: me
+server:
+  error:
+    include-message: always
