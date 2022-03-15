@@ -3,6 +3,7 @@ package com.maven.tutorial.mavem.tutorial.model.entity;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity(name = "social")
 @Data
@@ -15,6 +16,7 @@ public class Social {
     private String facebook;
     private String twitter;
     private String instagram;
+    private Date created;
 
     @OneToOne
     @JoinColumn(name = "user_id")

@@ -1,10 +1,13 @@
 package com.maven.tutorial.mavem.tutorial.service;
 
+import com.maven.tutorial.mavem.tutorial.model.PaginationCriteria;
 import com.maven.tutorial.mavem.tutorial.model.entity.Social;
 import com.maven.tutorial.mavem.tutorial.model.entity.User;
 import com.maven.tutorial.mavem.tutorial.model.request.UserRequest;
+import com.maven.tutorial.mavem.tutorial.model.response.SocialResponse;
 import com.maven.tutorial.mavem.tutorial.repository.SocialRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -26,6 +29,23 @@ public class SocialService {
         social.setTwitter(userRequest.getTwitter());
         social.setUser(user);
         repository.save(social);
+    }
+
+    public Page<SocialResponse> findAll() {
+        PaginationCriteria criteria = new PaginationCriteria();
+        return  repository.findAll(criteria.genPageRequest()).map(this::mapSocialResponse);
+    }
+
+    private SocialResponse mapSocialResponse(Social entity) {
+        return SocialResponse.builder()
+                .created(entity.getCreated())
+                .facebook(entity.getFacebook())
+                .firstName(entity.getUser().getFirstName())
+                .Id(entity.getId())
+                .instagram(entity.getInstagram())
+                .lastName(entity.getUser().getLastName())
+                .twitter(entity.getTwitter())
+                .build();
     }
 
 }
