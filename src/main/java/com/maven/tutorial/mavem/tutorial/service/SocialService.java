@@ -11,7 +11,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -46,6 +49,13 @@ public class SocialService {
                 .lastName(entity.getUser().getLastName())
                 .twitter(entity.getTwitter())
                 .build();
+    }
+
+    public boolean validParentheses(String parens)
+    {
+      List<String> strings = Arrays.stream(parens.split("")).collect(Collectors.toList());
+
+        return strings.stream().filter(s -> s.equals("(") || s.equals(")")).count() == 1;
     }
 
 }
